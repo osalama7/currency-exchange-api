@@ -1,0 +1,10 @@
+web:
+  build: .
+  ports:
+   - "30:8181"
+  volumes:
+   - .:/usr/src/app/
+  environment:
+   NODE_ENV: dev
+
+

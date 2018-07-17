@@ -1,0 +1,34 @@
+{
+  "name": "currency-exchange-api",
+  "version": "1.0.0",
+  "description": "nodejs currency exchange api",
+  "main": "server.js",
+  "scripts": {
+    "start": "NODE_ENV=dev node ./server.js",
+    "test": "NODE_ENV=test mocha ./tests/*.js",
+    "docker-up": "docker-compose up"
+  },
+  "keywords": [
+    "nodejs",
+    "currrency",
+    "exchange"
+  ],
+  "author": "Osama Salama",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.13.3",
+    "colors": "^1.3.0",
+    "compression": "^1.7.3",
+    "csv": "^3.1.0",
+    "express": "^4.16.3",
+    "fast-csv": "^2.4.1",
+    "mongodb": "^3.1.1",
+    "mocha": "^2.4.5",
+    "chai": "^3.5.0",
+    "chai-http": "^2.0.1"
+  },
+  "devDependencies": {
+    "lodash": "^4.17.10",
+    "moment": "^2.22.2"
+  }
+}

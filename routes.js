@@ -78,6 +78,7 @@ Router.post('/exchange', async (req, res, next) => {
 			});
 
 	console.log({calculation});
+	calculation.to = req.body.to
 	res.status(200).send(calculation);
 	next();
 });

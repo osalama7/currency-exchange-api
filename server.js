@@ -20,10 +20,11 @@ app.get('/', async (req, res, next) => {
 	res.status(200).send('Api up and running welcome to homepage')
 });
 
-
 app.listen(Config.port, async () => {
 	app.use('/', Routes);
-	await MongoAdapter.dbConnection.connect();
+	await MongoAdapter.dbConnection.connect().catch(err => {
+		console.error(err);
+	});
 
 	console.log(colors.green(`Currency exchange api running: ${Config.port}`));
 });

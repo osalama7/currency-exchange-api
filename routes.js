@@ -40,10 +40,14 @@ Router.get(RoutePaths.exchange.GetAllEuroRates, async (req, res, next) => {
 		console.error(colors.red(`Failed to insert transaction ${error}`));
 		res.status(500).send(`Failed to insert transaction, try again later`);
 	});
-	let currencyRates = await FileParser.getParsedEurRates();
 
-	res.status(200).send(currencyRates);
-	next();
+	await FileParser.getParsedEurRates()
+			.then(currencyRates => {
+
+		res.status(200).send(currencyRates);
+		next();
+	});
+
 });
 
 /**
@@ -54,16 +58,21 @@ Router.get(RoutePaths.exchange.GetAllEuroRates, async (req, res, next) => {
  * @param from {string} request body - optional
  * @param to {string} request body - optional
  * @param amount {string} request body - mandatory { default : 1 }
+ * @query {string} query optional precision parameter defaults to 4
  * @returns value of exchange rate
  */
-Router.post('/exchange', async (req, res, next) => {
-
+Router.post(RoutePaths.exchange.GetExchangeRate, async (req, res, next) => {
 	let transactionLogCollection = await mongo.db.collection('transaction-log');
 
 	let result = CurrencyExchange.validateExchangeData(req.body).catch(err => {
 		res.status(403).send(`Failed to validate request body`);
 	});
-	let calculation = await CurrencyExchange.getExchangeRate(req.body);
+
+	let calculation = {};
+	calculation.value = await CurrencyExchange.getExchangeRate(req.body, req.query.p ? req.query.p : 4).catch(err => {
+		console.error(err);
+	});
+
 	await transactionLogCollection
 			.insertMany([{
 				request: 'Exchange',
@@ -77,8 +86,8 @@ Router.post('/exchange', async (req, res, next) => {
 				res.status(500).send(`Failed to insert transaction`);
 			});
 
-	console.log({calculation});
-	calculation.to = req.body.to
+	calculation.to = req.body.to;
+	calculation.from = req.body.from;
 	res.status(200).send(calculation);
 	next();
 });
